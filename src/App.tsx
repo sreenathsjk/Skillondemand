@@ -233,36 +233,14 @@ export default function App() {
             
             {/* Hero Greeting Section / Sign In onboarding controls */}
             {!currentUser ? (
-              <div className="bg-gradient-to-br from-indigo-950 via-slate-900 to-slate-950 text-white rounded-3xl border border-slate-800 p-6 md:p-12 text-left relative overflow-hidden shadow-xl shadow-slate-900/10">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(244,63,94,0.14),transparent_50%)] pointer-events-none" />
-                
-                <div className="relative z-10 space-y-5 max-w-3xl">
-                  <div className="inline-flex items-center gap-1.5 bg-rose-500/15 border border-rose-500/30 text-rose-300 px-3 py-1 rounded-full text-xs font-bold font-mono tracking-wider uppercase">
-                    <Sparkles className="h-3.5 w-3.5" /> Instant Expert Help
-                  </div>
-                  
-                  <h1 className="text-3xl md:text-5xl font-black tracking-tight leading-tight font-sans">
-                    Instantly Consult with Curated Industry Experts.
-                  </h1>
-                  
-                  <p className="text-sm md:text-base text-slate-300 leading-relaxed font-normal">
-                    Solve tough coding bugs, build Excel spreadsheet power queries, train English presentation formats, or undergo mock recruit trial questions. Lock an on-demand **30–60 minute session** in seconds.
-                  </p>
-
-                  <div className="pt-2">
-                    <button
-                      onClick={() => {
-                        setAuthError(null);
-                        setShowOnboardModal(true);
-                      }}
-                      className="bg-white hover:bg-rose-500 text-slate-900 hover:text-white font-bold text-xs py-3 px-6 rounded-xl transition-all cursor-pointer shadow-md shadow-white/5 hover:scale-[1.02] active:scale-95 inline-flex items-center gap-2"
-                      id="trigger-onboard-modal-btn"
-                    >
-                      <ShieldCheck className="h-4 w-4 text-rose-500 hover:text-white transition-colors" />
-                      <span>Authenticated onboarding call</span>
-                    </button>
-                  </div>
+              <div className="py-10 text-center max-w-4xl mx-auto space-y-4">
+                <div className="inline-flex items-center gap-1.5 bg-rose-50 border border-rose-100 text-rose-600 px-3 py-1 rounded-full text-xs font-bold font-mono tracking-wider uppercase">
+                  <Sparkles className="h-3.5 w-3.5 text-rose-500" /> Instant Expert Help
                 </div>
+                
+                <h1 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight font-sans">
+                  Instantly Consult with Curated Industry Experts.
+                </h1>
               </div>
             ) : (
               /* Signed-in mini welcome banners */
