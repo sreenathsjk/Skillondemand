@@ -170,6 +170,41 @@ async function startServer() {
     res.json({ user, token: updatedToken });
   });
 
+function getSubSkillsForCategory(category: string): string[] {
+  const catLower = category.toLowerCase().trim();
+  if (catLower.includes('technical & it')) {
+    return ['coding', 'system design', 'react', 'node.js', 'typescript', 'postgresql', 'excel', 'sql', 'data analytics', 'powerbi', 'python', 'technical & it skills', 'it', 'software'];
+  }
+  if (catLower.includes('creative & design')) {
+    return ['ui/ux design', 'figma', 'design systems', 'mobile app', 'user research', 'framer', 'creative & design', 'design', 'creative'];
+  }
+  if (catLower.includes('blue-collar') || catLower.includes('local services')) {
+    return ['carpentry', 'plumbing', 'electrical', 'appliance repair', 'blue-collar / local services', 'blue-collar', 'local services', 'repair', 'electrician'];
+  }
+  if (catLower.includes('business & consulting')) {
+    return ['business communication', 'presentation skills', 'financial modeling', 'resume review', 'salary negotiation', 'business & consulting', 'consulting', 'business'];
+  }
+  if (catLower.includes('education & tutoring')) {
+    return ['english', 'accent training', 'tutoring', 'coaching', 'education & tutoring', 'sat', 'act', 'math', 'calculus', 'education', 'teacher'];
+  }
+  if (catLower.includes('freelance services')) {
+    return ['freelance', 'contracting', 'freelance services', 'figma', 'coding', 'excel', 'gigs'];
+  }
+  if (catLower.includes('health & wellness')) {
+    return ['yoga', 'nutrition', 'fitness', 'mental health', 'health & wellness', 'health', 'wellness', 'diet', 'coach'];
+  }
+  if (catLower.includes('skill-based training')) {
+    return ['interview prep', 'resume writing', 'tech interviews', 'career growth', 'salary negotiation', 'skill-based training', 'skills'];
+  }
+  if (catLower.includes('home & personal')) {
+    return ['organizing', 'styling', 'gardening', 'home & personal services', 'personal', 'home'];
+  }
+  if (catLower.includes('professional services')) {
+    return ['interview prep', 'resume writing', 'tech interviews', 'career growth', 'salary negotiation', 'coding', 'system design', 'excel', 'sql', 'professional services', 'professional'];
+  }
+  return [catLower];
+}
+
   // --- EXPERTS DIRECTORY APIS ---
   
   app.get('/api/experts', (req, res) => {
@@ -191,8 +226,12 @@ async function startServer() {
 
     if (skill) {
       const s = String(skill).toLowerCase();
+      const targetTags = getSubSkillsForCategory(s);
       profiles = profiles.filter(p => 
-        p.skills.some(skillTag => skillTag.toLowerCase() === s)
+        p.skills.some(skillTag => {
+          const stLower = skillTag.toLowerCase();
+          return stLower === s || targetTags.includes(stLower);
+        })
       );
     }
 

@@ -28,7 +28,7 @@ const SEED_PROFILES: ExpertProfile[] = [
     email: 'johndoe@example.com',
     title: 'Senior Software Architect @ Google',
     bio: 'Over 12 years of core development experience building search pipelines and low-latency API architectures. Ask me about React/Vite optimizations, scaling Express/Node setups, TypeScript safety, database modeling, and technical system design reviews.',
-    skills: ['Coding', 'System Design', 'React', 'Node.js', 'TypeScript', 'PostgreSQL'],
+    skills: ['Coding', 'System Design', 'React', 'Node.js', 'TypeScript', 'PostgreSQL', 'Technical & IT Skills', 'Freelance Services', 'Professional Services'],
     pricePer30Min: 1500,
     pricePer60Min: 2800,
     averageRating: 4.8,
@@ -42,7 +42,7 @@ const SEED_PROFILES: ExpertProfile[] = [
     email: 'priyasharma@example.com',
     title: 'Lead Data Architect & Excel Wizard',
     bio: 'Struggling with complex spreadsheet templates, lookup macros, power query setups, or relational SQL modeling? I am a Lead Data Architect specializing in converting unorganized business inputs into high-impact visual interactive dashboards.',
-    skills: ['Excel', 'SQL', 'Data Analytics', 'PowerBI', 'Python', 'Financial Modeling'],
+    skills: ['Excel', 'SQL', 'Data Analytics', 'PowerBI', 'Python', 'Financial Modeling', 'Technical & IT Skills', 'Professional Services', 'Freelance Services'],
     pricePer30Min: 1000,
     pricePer60Min: 1800,
     averageRating: 4.9,
@@ -56,7 +56,7 @@ const SEED_PROFILES: ExpertProfile[] = [
     email: 'sarahjenkins@example.com',
     title: 'Executive English & Business Pitch Coach',
     bio: 'Former BBC analyst and professional speech advisor. I will polish your executive pitch deck flow, enhance business email etiquette, train proper business accents, and prepare you to present flawlessly to global venture capitalists and directors.',
-    skills: ['English', 'Accent Training', 'Business Communication', 'Presentation Skills', 'Resume Review'],
+    skills: ['English', 'Accent Training', 'Business Communication', 'Presentation Skills', 'Resume Review', 'Education & Tutoring', 'Business & Consulting', 'Professional Services'],
     pricePer30Min: 1200,
     pricePer60Min: 2200,
     averageRating: 4.7,
@@ -70,7 +70,7 @@ const SEED_PROFILES: ExpertProfile[] = [
     email: 'alexmercer@example.com',
     title: 'Principal Product Designer @ Airbnb',
     bio: 'Building user-centric, responsive, beautiful mobile-first experiences. Reach out for surgical portfolio inspections, constructive Figma workspace design reviews, color system layouts, and interactive micro-animations counseling.',
-    skills: ['UI/UX Design', 'Figma', 'Design Systems', 'Mobile App', 'User Research', 'Framer'],
+    skills: ['UI/UX Design', 'Figma', 'Design Systems', 'Mobile App', 'User Research', 'Framer', 'Creative & Design', 'Freelance Services', 'Skill-Based Training'],
     pricePer30Min: 1400,
     pricePer60Min: 2500,
     averageRating: 4.9,
@@ -84,12 +84,54 @@ const SEED_PROFILES: ExpertProfile[] = [
     email: 'marcusthorne@example.com',
     title: 'Ex-Meta Lead Recruiter & Interview Coach',
     bio: 'Having scanned over 50k resumes, I know exactly what companies search for. Let us run simulated mock behavioral questions, deep tech architecture trial prep, and resume rewriting workshops to push past resume tracking screening systems.',
-    skills: ['Interview Prep', 'Resume Writing', 'Tech Interviews', 'Career Growth', 'Salary Negotiation'],
+    skills: ['Interview Prep', 'Resume Writing', 'Tech Interviews', 'Career Growth', 'Salary Negotiation', 'Business & Consulting', 'Skill-Based Training', 'Professional Services'],
     pricePer30Min: 1800,
     pricePer60Min: 3200,
     averageRating: 5.0,
     totalSessions: 312,
     avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80',
+    featured: true,
+  },
+  {
+    id: 'u_expert6',
+    name: 'Ramesh Kumar',
+    email: 'rameshkumar@example.com',
+    title: 'Master Electrician & Smart Home Automation expert',
+    bio: 'With over 15 years servicing urban complexes, I diagnose complex electrical distribution issues, consult on home automation standards, and coach junior technicians on electrical code compliance, residential safety, and smart grids.',
+    skills: ['Electrical', 'Appliance Repair', 'Blue-Collar / Local Services', 'Home & Personal Services', 'Professional Services'],
+    pricePer30Min: 800,
+    pricePer60Min: 1500,
+    averageRating: 4.8,
+    totalSessions: 94,
+    avatarUrl: 'https://images.unsplash.com/photo-1540569014015-19a7be504e3a?auto=format&fit=crop&w=150&h=150&q=80',
+    featured: true,
+  },
+  {
+    id: 'u_expert7',
+    name: 'Dr. Emily Stone',
+    email: 'emilystone@example.com',
+    title: 'Professional SAT/ACT Math and Calculus Tutor',
+    bio: 'Guiding high school and university students to perfect quantitative assessment scores. I structure customized math training frameworks, offer surgical concept coaching in real analysis/geometry, and deliver test-taking speed drills.',
+    skills: ['Math', 'Calculus', 'Tutoring', 'Education & Tutoring', 'Skill-Based Training', 'Professional Services'],
+    pricePer30Min: 900,
+    pricePer60Min: 1650,
+    averageRating: 4.9,
+    totalSessions: 182,
+    avatarUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=150&h=150&q=80',
+    featured: false,
+  },
+  {
+    id: 'u_expert8',
+    name: 'David Chen',
+    email: 'davidchen@example.com',
+    title: 'Holistic Wellness & Strength Conditioning Coach',
+    bio: 'Certified nutrition specialist and somatic mindfulness counselor. I build targeted weight optimization dietary guidelines, custom posture recovery drills, and breathing flow sessions intended for professionals spending long hours in seating hubs.',
+    skills: ['Yoga', 'Nutrition', 'Health & Wellness', 'Home & Personal Services', 'Professional Services'],
+    pricePer30Min: 1100,
+    pricePer60Min: 2000,
+    averageRating: 5.0,
+    totalSessions: 53,
+    avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&h=150&q=80',
     featured: true,
   }
 ];
@@ -97,6 +139,18 @@ const SEED_PROFILES: ExpertProfile[] = [
 class LocalDatabaseClient {
   private getStore() {
     let raw = localStorage.getItem('skillbridge_local_db');
+    if (raw) {
+      try {
+        const testDb = JSON.parse(raw);
+        if (!testDb.profiles || !testDb.profiles.some((p: any) => p.id === 'u_expert6')) {
+          localStorage.removeItem('skillbridge_local_db');
+          raw = null;
+        }
+      } catch (e) {
+        localStorage.removeItem('skillbridge_local_db');
+        raw = null;
+      }
+    }
     if (!raw) {
       const getFutureDateString = (offsetDays: number): string => {
         const d = new Date();
@@ -321,7 +375,46 @@ class LocalDatabaseClient {
 
     if (filters.skill) {
       const s = filters.skill.toLowerCase();
-      list = list.filter(p => p.skills.some((sk: string) => sk.toLowerCase() === s));
+      const getSubSkillsForCategory = (category: string) => {
+        const catLower = category.toLowerCase().trim();
+        if (catLower.includes('technical & it')) {
+          return ['coding', 'system design', 'react', 'node.js', 'typescript', 'postgresql', 'excel', 'sql', 'data analytics', 'powerbi', 'python', 'technical & it skills', 'it', 'software'];
+        }
+        if (catLower.includes('creative & design')) {
+          return ['ui/ux design', 'figma', 'design systems', 'mobile app', 'user research', 'framer', 'creative & design', 'design', 'creative'];
+        }
+        if (catLower.includes('blue-collar') || catLower.includes('local services')) {
+          return ['carpentry', 'plumbing', 'electrical', 'appliance repair', 'blue-collar / local services', 'blue-collar', 'local services', 'repair', 'electrician'];
+        }
+        if (catLower.includes('business & consulting')) {
+          return ['business communication', 'presentation skills', 'financial modeling', 'resume review', 'salary negotiation', 'business & consulting', 'consulting', 'business'];
+        }
+        if (catLower.includes('education & tutoring')) {
+          return ['english', 'accent training', 'tutoring', 'coaching', 'education & tutoring', 'sat', 'act', 'math', 'calculus', 'education', 'teacher'];
+        }
+        if (catLower.includes('freelance services')) {
+          return ['freelance', 'contracting', 'freelance services', 'figma', 'coding', 'excel', 'gigs'];
+        }
+        if (catLower.includes('health & wellness')) {
+          return ['yoga', 'nutrition', 'fitness', 'mental health', 'health & wellness', 'health', 'wellness', 'diet', 'coach'];
+        }
+        if (catLower.includes('skill-based training')) {
+          return ['interview prep', 'resume writing', 'tech interviews', 'career growth', 'salary negotiation', 'skill-based training', 'skills'];
+        }
+        if (catLower.includes('home & personal')) {
+          return ['organizing', 'styling', 'gardening', 'home & personal services', 'personal', 'home'];
+        }
+        if (catLower.includes('professional services')) {
+          return ['interview prep', 'resume writing', 'tech interviews', 'career growth', 'salary negotiation', 'coding', 'system design', 'excel', 'sql', 'professional services', 'professional'];
+        }
+        return [catLower];
+      };
+
+      const targetTags = getSubSkillsForCategory(s);
+      list = list.filter(p => p.skills.some((sk: string) => {
+        const skLower = sk.toLowerCase();
+        return skLower === s || targetTags.includes(skLower);
+      }));
     }
 
     if (filters.maxPrice) {

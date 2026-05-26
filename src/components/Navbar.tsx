@@ -12,6 +12,7 @@ interface NavbarProps {
   onRoleSwitch: (role: UserRole) => void;
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  onOnboardClick?: () => void;
 }
 
 export default function Navbar({
@@ -19,7 +20,8 @@ export default function Navbar({
   onLogout,
   onRoleSwitch,
   activeTab,
-  setActiveTab
+  setActiveTab,
+  onOnboardClick
 }: NavbarProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -112,7 +114,16 @@ export default function Navbar({
 
         {/* User Information containing Sidebar Menu Toggle Button */}
         <div className="flex items-center gap-3">
-          {currentUser && (
+          {!currentUser ? (
+            <button
+              onClick={onOnboardClick}
+              className="hidden md:flex items-center gap-1.5 bg-slate-900 hover:bg-rose-605 text-white font-bold text-xs py-2.5 px-4.5 rounded-xl cursor-pointer transition-all shadow-md shadow-slate-950/5 hover:scale-[1.02]"
+              id="navbar-onboard-btn"
+            >
+              <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
+              <span>Sign In / Onboard</span>
+            </button>
+          ) : (
             <div className="hidden md:flex items-center gap-3">
               {/* Quick switcher for easy testing */}
               <div className="hidden lg:flex items-center gap-1 bg-slate-100/80 p-1 rounded-lg border border-slate-200/40 text-[10px]">
@@ -275,11 +286,14 @@ export default function Navbar({
                     <Award className="h-8 w-8 text-rose-500/80 mx-auto" />
                     <div>
                       <p className="text-xs font-bold text-slate-800">Ready to consult curated experts?</p>
-                      <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">Instantly book custom 1-on-1 slots. Sign in with the Magic on-demand link in the main panel.</p>
+                      <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">Instantly book custom 1-on-1 slots. Setup your profile now for quick access.</p>
                     </div>
                     <button
-                      onClick={() => handleSidebarNav('explore')}
-                      className="bg-slate-950 hover:bg-rose-500 text-white font-semibold text-xs py-2 px-4 rounded-xl cursor-pointer w-full transition-all"
+                      onClick={() => {
+                        setIsSidebarOpen(false);
+                        onOnboardClick?.();
+                      }}
+                      className="bg-slate-950 hover:bg-rose-500 text-white font-bold text-xs py-2.5 px-4 rounded-xl cursor-pointer w-full transition-all"
                     >
                       Authenticate Onboarding Action
                     </button>

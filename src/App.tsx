@@ -11,6 +11,7 @@ import {
   Sparkles, Search, SlidersHorizontal, Star, ShieldCheck, 
   MapPin, Clock, Tag, Award, CheckCircle2, ChevronRight, UserPlus, X, ArrowLeft
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 
 export default function App() {
   // Authentication states
@@ -112,6 +113,7 @@ export default function App() {
       const resp = await api.magicLogin(authEmail, authName || undefined, authRole);
       api.setToken(resp.token);
       setCurrentUser(resp.user);
+      setShowOnboardModal(false); // Close the onboarding modal on success
       
       // Auto switch tabs
       if (resp.user.role === 'expert') {
@@ -176,7 +178,18 @@ export default function App() {
     setMinRating(0);
   };
 
-  const POPULAR_SKILLS = ['Coding', 'Excel', 'UI/UX Design', 'English', 'Interview Prep', 'SQL', 'System Design'];
+  const POPULAR_SKILLS = [
+    'Technical & IT Skills',
+    'Creative & Design',
+    'Blue-Collar / Local Services',
+    'Business & Consulting',
+    'Education & Tutoring',
+    'Freelance Services',
+    'Health & Wellness',
+    'Skill-Based Training',
+    'Home & Personal Services',
+    'Professional Services'
+  ];
 
   return (
     <div className="min-h-screen bg-slate-50/40 text-slate-800 flex flex-col font-sans">
@@ -188,6 +201,10 @@ export default function App() {
         onRoleSwitch={handleAdminTestingRoleSwitch}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
+        onOnboardClick={() => {
+          setAuthError(null);
+          setShowOnboardModal(true);
+        }}
       />
 
       {/* Main Body */}
@@ -216,100 +233,35 @@ export default function App() {
             
             {/* Hero Greeting Section / Sign In onboarding controls */}
             {!currentUser ? (
-              <div className="bg-white rounded-3xl border border-slate-100 shadow-md p-6 md:p-10 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center text-left">
-                <div className="space-y-5">
-                  <div className="inline-flex items-center gap-1.5 bg-rose-50 border border-rose-100 text-rose-600 px-3 py-1 rounded-full text-xs font-bold leading-none font-mono tracking-wider uppercase">
+              <div className="bg-gradient-to-br from-indigo-950 via-slate-900 to-slate-950 text-white rounded-3xl border border-slate-800 p-6 md:p-12 text-left relative overflow-hidden shadow-xl shadow-slate-900/10">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(244,63,94,0.14),transparent_50%)] pointer-events-none" />
+                
+                <div className="relative z-10 space-y-5 max-w-3xl">
+                  <div className="inline-flex items-center gap-1.5 bg-rose-500/15 border border-rose-500/30 text-rose-300 px-3 py-1 rounded-full text-xs font-bold font-mono tracking-wider uppercase">
                     <Sparkles className="h-3.5 w-3.5" /> Instant Expert Help
                   </div>
                   
-                  <h1 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight leading-none font-sans">
+                  <h1 className="text-3xl md:text-5xl font-black tracking-tight leading-tight font-sans">
                     Instantly Consult with Curated Industry Experts.
                   </h1>
                   
-                  <p className="text-sm text-slate-500 leading-relaxed font-normal">
+                  <p className="text-sm md:text-base text-slate-300 leading-relaxed font-normal">
                     Solve tough coding bugs, build Excel spreadsheet power queries, train English presentation formats, or undergo mock recruit trial questions. Lock an on-demand **30–60 minute session** in seconds.
                   </p>
-                </div>
 
-                {/* Secure Magic-link signup simulator form */}
-                <div className="bg-slate-50/60 rounded-2xl border border-slate-100/80 p-6 space-y-4">
-                  <div>
-                    <span className="text-xs font-mono font-bold text-slate-400 block tracking-wider uppercase">
-                      SkillOnDemand Onboarding Session
-                    </span>
-                  </div>
-
-                  <form onSubmit={handleMagicLogin} className="space-y-3">
-                    {authError && (
-                      <div className="bg-rose-50 border border-rose-200/50 text-rose-700 text-[11px] p-2 rounded-xl">
-                        {authError}
-                      </div>
-                    )}
-
-                    <div className="space-y-1 text-left">
-                      <label className="text-[10px] font-mono tracking-wider uppercase text-slate-500">
-                        Email Address
-                      </label>
-                      <input
-                        type="email"
-                        required
-                        placeholder="email@example.com"
-                        value={authEmail}
-                        onChange={(e) => setAuthEmail(e.target.value)}
-                        className="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-white"
-                      />
-                    </div>
-
-                    <div className="space-y-1 text-left">
-                      <label className="text-[10px] font-mono tracking-wider uppercase text-slate-500">
-                        Name (Optional)
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="E.g., Sarah Jordan"
-                        value={authName}
-                        onChange={(e) => setAuthName(e.target.value)}
-                        className="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-white"
-                      />
-                    </div>
-
-                    <div className="space-y-1 text-left">
-                      <label className="text-[10px] font-mono tracking-wider uppercase text-slate-500 block mb-1">
-                        Select account role
-                      </label>
-                      <div className="flex gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setAuthRole('learner')}
-                          className={`flex-1 py-1.5 text-xs font-semibold rounded-lg border transition-all cursor-pointer ${
-                            authRole === 'learner' 
-                              ? 'bg-rose-500 text-white border-rose-500 font-bold' 
-                              : 'bg-white text-slate-600 border-slate-200'
-                          }`}
-                        >
-                          Learner Customer
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setAuthRole('expert')}
-                          className={`flex-1 py-1.5 text-xs font-semibold rounded-lg border transition-all cursor-pointer ${
-                            authRole === 'expert' 
-                              ? 'bg-rose-500 text-white border-rose-500 font-bold' 
-                              : 'bg-white text-slate-600 border-slate-200'
-                          }`}
-                        >
-                          Industry Expert
-                        </button>
-                      </div>
-                    </div>
-
+                  <div className="pt-2">
                     <button
-                      type="submit"
-                      className="w-full bg-slate-900 hover:bg-rose-600 text-white font-semibold text-xs py-3 rounded-xl transition-all cursor-pointer shadow-xs mt-2"
+                      onClick={() => {
+                        setAuthError(null);
+                        setShowOnboardModal(true);
+                      }}
+                      className="bg-white hover:bg-rose-500 text-slate-900 hover:text-white font-bold text-xs py-3 px-6 rounded-xl transition-all cursor-pointer shadow-md shadow-white/5 hover:scale-[1.02] active:scale-95 inline-flex items-center gap-2"
+                      id="trigger-onboard-modal-btn"
                     >
-                      Authenticate Onboarding Call
+                      <ShieldCheck className="h-4 w-4 text-rose-500 hover:text-white transition-colors" />
+                      <span>Authenticated onboarding call</span>
                     </button>
-                  </form>
+                  </div>
                 </div>
               </div>
             ) : (
@@ -624,9 +576,8 @@ export default function App() {
                             </p>
                             <button
                               onClick={() => {
-                                // Close selected expert to drop user back on standard login/onboarding list directory page
-                                setSelectedExpert(null);
-                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                                setAuthError(null);
+                                setShowOnboardModal(true);
                               }}
                               className="w-full bg-slate-900 hover:bg-rose-500 text-white text-xs font-semibold py-3 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 animate-pulse"
                               id="anonymous-onboarding-btn"
@@ -728,6 +679,122 @@ export default function App() {
           }}
         />
       )}
+
+      {/* Elegant Onboarding Dialog Modal */}
+      <AnimatePresence>
+        {showOnboardModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowOnboardModal(false)}
+              className="absolute inset-0 bg-slate-900/60 backdrop-blur-xs"
+            />
+            
+            {/* Modal Box */}
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="relative bg-white rounded-3xl border border-slate-100 shadow-2xl p-6 md:p-8 max-w-md w-full z-10 text-left space-y-4 focus:outline-none"
+            >
+              <button
+                onClick={() => setShowOnboardModal(false)}
+                className="absolute top-4 right-4 text-slate-400 hover:text-slate-650 p-2 rounded-xl hover:bg-slate-50 transition-all cursor-pointer"
+                title="Close Form"
+              >
+                <X className="h-4.5 w-4.5" />
+              </button>
+
+              <div className="space-y-1">
+                <span className="text-[10px] font-mono font-bold text-rose-500 block tracking-wider uppercase leading-none">
+                  SkillOnDemand Onboarding
+                </span>
+                <h3 className="text-lg font-black text-slate-900 font-sans tracking-tight leading-tight">
+                  SkillOnDemand Onboarding Session
+                </h3>
+                <p className="text-xs text-slate-400">
+                  Authenticate your credentials below to create or resume your consult profile.
+                </p>
+              </div>
+
+              <form onSubmit={handleMagicLogin} className="space-y-3.5">
+                {authError && (
+                  <div className="bg-rose-50 border border-rose-250/20 text-rose-700 text-[11px] p-2.5 rounded-xl font-medium">
+                    {authError}
+                  </div>
+                )}
+
+                <div className="space-y-1 text-left">
+                  <label className="text-[10px] font-mono tracking-wider uppercase text-slate-500 font-bold block mb-0.5">
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    placeholder="email@example.com"
+                    value={authEmail}
+                    onChange={(e) => setAuthEmail(e.target.value)}
+                    className="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-white"
+                  />
+                </div>
+
+                <div className="space-y-1 text-left">
+                  <label className="text-[10px] font-mono tracking-wider uppercase text-slate-500 font-bold block mb-0.5">
+                    Name (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="E.g., Sarah Jordan"
+                    value={authName}
+                    onChange={(e) => setAuthName(e.target.value)}
+                    className="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-white"
+                  />
+                </div>
+
+                <div className="space-y-1 text-left">
+                  <label className="text-[10px] font-mono tracking-wider uppercase text-slate-500 block font-bold mb-1">
+                    Select account role
+                  </label>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setAuthRole('learner')}
+                      className={`flex-1 py-2 text-xs font-semibold rounded-lg border transition-all cursor-pointer ${
+                        authRole === 'learner' 
+                          ? 'bg-rose-500 text-white border-rose-500 font-bold' 
+                          : 'bg-white text-slate-600 border-slate-200'
+                      }`}
+                    >
+                      Learner Customer
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setAuthRole('expert')}
+                      className={`flex-1 py-2 text-xs font-semibold rounded-lg border transition-all cursor-pointer ${
+                        authRole === 'expert' 
+                          ? 'bg-rose-500 text-white border-rose-500 font-bold' 
+                          : 'bg-white text-slate-600 border-slate-200'
+                      }`}
+                    >
+                      Industry Expert
+                    </button>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-slate-900 hover:bg-rose-600 text-white font-bold text-xs py-3 rounded-xl transition-all cursor-pointer shadow-md shadow-slate-900/10 mt-3"
+                >
+                  Authenticate Onboarding Call
+                </button>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Elegant minimalist platform footer */}
       <footer className="border-t border-slate-100/65 py-8 bg-white/70 backdrop-blur-md text-center text-xs text-slate-500 mt-20 select-none">
