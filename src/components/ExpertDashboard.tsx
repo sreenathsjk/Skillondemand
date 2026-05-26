@@ -49,6 +49,12 @@ export default function ExpertDashboard({ expertProfile, onProfileUpdated }: Exp
   const [slotDuration, setSlotDuration] = useState<30 | 60>(30);
   const [slotProgress, setSlotProgress] = useState<string | null>(null);
 
+  // High-level Premium Period package states
+  const [customSlotType, setCustomSlotType] = useState('hour'); // 'hour' | 'day' | '2-day' | 'week' | 'month'
+  const [customPrice, setCustomPrice] = useState<string>('');
+  const [customMeetingLink, setCustomMeetingLink] = useState<string>('');
+  const [customStartTime, setCustomStartTime] = useState('09:00');
+
   // Generate 14 days list starting from today
   const datesList: string[] = [];
   for (let i = 0; i < 14; i++) {
@@ -163,6 +169,43 @@ export default function ExpertDashboard({ expertProfile, onProfileUpdated }: Exp
   };
 
   // Settle completion booking states
+  const handlePublishCustomSlot = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedDate) {
+      setError('Please select an active date first.');
+      return;
+    }
+    setError(null);
+    setLoading(true);
+
+    try {
+      const priceVal = customPrice ? Number(customPrice) : undefined;
+      let calculatedDuration = slotDuration;
+      if (customSlotType === 'day') calculatedDuration = 1440;
+      else if (customSlotType === '2-day') calculatedDuration = 2880;
+      else if (customSlotType === 'week') calculatedDuration = 10080;
+      else if (customSlotType === 'month') calculatedDuration = 43200;
+
+      await api.createSlot({
+        date: selectedDate,
+        startTime: customStartTime || '09:00',
+        duration: calculatedDuration,
+        slotType: customSlotType,
+        price: priceVal,
+        meetingLink: customMeetingLink || undefined,
+      });
+
+      // Reset inputs & refresh
+      setCustomPrice('');
+      setCustomMeetingLink('');
+      await fetchExpertData();
+    } catch (err: any) {
+      setError(err.message || 'Could not publish custom premium package offering.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleToggleCompleted = async (bookingId: string) => {
     try {
       await api.updateBookingStatus(bookingId, 'completed');
@@ -388,37 +431,123 @@ export default function ExpertDashboard({ expertProfile, onProfileUpdated }: Exp
                   );
                 })}
               </div>
-            </div>
-
-            {/* Slot Template switch controls */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100/80">
+                        {/* Standard Slots & Custom Retainer Packages Management Panel */}
+            <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 space-y-4">
               <div>
-                <span className="text-xs font-bold text-slate-800 block">Slot Template Duration</span>
-                <span className="text-[10px] text-slate-400 font-mono">Select meeting duration for any newly published slot.</span>
+                <h3 className="text-xs font-black text-slate-900 block uppercase font-mono tracking-wide">
+                  ✦ Configure & Publish Offerings for {selectedDate ? new Date(selectedDate).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }) : ''}
+                </h3>
+                <p className="text-[10px] text-slate-500 font-medium">
+                  CEO-level experts can configure hourly consulting blocks or launch high-level Period Retainers (Daily, Weekly, Monthly) with customized charges.
+                </p>
               </div>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => setSlotDuration(30)}
-                  className={`px-4 py-2 text-xs font-black rounded-xl border transition-all cursor-pointer ${
-                    slotDuration === 30
-                      ? 'bg-rose-500 border-rose-500 text-white shadow-xs'
-                      : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-100'
-                  }`}
-                >
-                  30 Mins length
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSlotDuration(60)}
-                  className={`px-4 py-2 text-xs font-black rounded-xl border transition-all cursor-pointer ${
-                    slotDuration === 60
-                      ? 'bg-rose-500 border-rose-500 text-white shadow-xs'
-                      : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-100'
-                  }`}
-                >
-                  60 Mins length
-                </button>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+                {/* Standard Hourly Setup */}
+                <div className="bg-white p-4 rounded-xl border border-slate-200/60 flex flex-col justify-between">
+                  <div>
+                    <span className="text-[10px] font-mono font-bold text-rose-600 block uppercase">Option A: Hourly Quick-Slots</span>
+                    <p className="text-[11px] text-slate-500 mt-1">
+                      Quick-toggle predefined time buttons below to make them instantly bookable at your standard hourly list rates (₹{price30}/₹{price60}).
+                    </p>
+                  </div>
+                  <div className="flex gap-2.5 mt-3">
+                    <button
+                      type="button"
+                      onClick={() => setSlotDuration(30)}
+                      className={`flex-1 py-2 text-xs font-black rounded-xl border transition-all cursor-pointer ${
+                        slotDuration === 30
+                          ? 'bg-rose-500 border-rose-500 text-white shadow-xs'
+                          : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-100'
+                      }`}
+                    >
+                      30 Mins length
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSlotDuration(60)}
+                      className={`flex-1 py-2 text-xs font-black rounded-xl border transition-all cursor-pointer ${
+                        slotDuration === 60
+                          ? 'bg-rose-500 border-rose-500 text-white shadow-xs'
+                          : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-100'
+                      }`}
+                    >
+                      60 Mins length
+                    </button>
+                  </div>
+                </div>
+
+                {/* Custom Period Setup */}
+                <form onSubmit={handlePublishCustomSlot} className="bg-white p-4 rounded-xl border border-slate-200/60 space-y-3">
+                  <div>
+                    <span className="text-[10px] font-mono font-bold text-rose-600 block uppercase">Option B: Premium Retainers / Packages</span>
+                    <p className="text-[11px] text-slate-500 mt-0.5">
+                      Publish customized day, week, or month intervals at specialized custom prices.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="text-[9px] font-mono text-slate-400 block mb-1 font-bold">Duration Type</label>
+                      <select
+                        value={customSlotType}
+                        onChange={(e) => setCustomSlotType(e.target.value)}
+                        className="w-full bg-slate-50 border border-slate-200 text-[11px] font-bold text-slate-850 rounded-lg p-2 focus:ring-1 focus:ring-rose-500 focus:outline-hidden"
+                      >
+                        <option value="hour">Custom Hour Block</option>
+                        <option value="day">Full 1-Day Consultation</option>
+                        <option value="2-day">2-Day Advisory Session</option>
+                        <option value="week">1-Week Executive Retainer</option>
+                        <option value="month">1-Month Executive Retainer</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="text-[9px] font-mono text-slate-400 block mb-1 font-bold">Custom Payout Charge (₹)</label>
+                      <input
+                        type="number"
+                        placeholder="E.g., 25000"
+                        value={customPrice}
+                        onChange={(e) => setCustomPrice(e.target.value)}
+                        className="w-full bg-slate-50 border border-slate-200 text-[11px] font-bold text-slate-850 rounded-lg p-2 focus:ring-1 focus:ring-rose-500 focus:outline-hidden"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="text-[9px] font-mono text-slate-400 block mb-1 font-bold">Start Hour</label>
+                      <input
+                        type="text"
+                        placeholder="E.g., 10:00"
+                        value={customStartTime}
+                        onChange={(e) => setCustomStartTime(e.target.value)}
+                        className="w-full bg-slate-50 border border-slate-200 text-[11px] font-bold text-slate-850 rounded-lg p-2 focus:ring-1 focus:ring-rose-500 focus:outline-hidden"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-[9px] font-mono text-slate-400 block mb-1 font-bold">Video Link (Optional)</label>
+                      <input
+                        type="url"
+                        placeholder="E.g. Jitsi or Zoom link"
+                        value={customMeetingLink}
+                        onChange={(e) => setCustomMeetingLink(e.target.value)}
+                        className="w-full bg-slate-50 border border-slate-200 text-[11px] font-bold text-slate-850 rounded-lg p-2 focus:ring-1 focus:ring-rose-500 focus:outline-hidden"
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-slate-900 hover:bg-rose-500 text-white text-xs font-black py-2.5 rounded-xl transition-all cursor-pointer shadow-xs"
+                  >
+                    {loading ? 'Publishing portfolio...' : 'Publish Specialized Offer / Contract'}
+                  </button>
+                </form>
               </div>
             </div>
 
@@ -445,8 +574,10 @@ export default function ExpertDashboard({ expertProfile, onProfileUpdated }: Exp
               {/* Fetch Slot generator layout function */}
               {(() => {
                 const getSlotForTime = (timeStr: string) => {
-                  return slots.find(s => s.date === selectedDate && s.startTime === timeStr);
+                  return slots.find(s => s.date === selectedDate && s.startTime === timeStr && (!s.slotType || s.slotType === 'hour'));
                 };
+
+                const customPeriodSlots = slots.filter(s => s.date === selectedDate && s.slotType && s.slotType !== 'hour');
 
                 const renderTimeGroupBlock = (title: string, times: string[], description: string) => {
                   return (
@@ -535,6 +666,91 @@ export default function ExpertDashboard({ expertProfile, onProfileUpdated }: Exp
 
                 return (
                   <div className="space-y-6">
+                    {/* Render Custom CEO Premium Retainer offerings if any exist */}
+                    {customPeriodSlots.length > 0 && (
+                      <div className="space-y-3 bg-rose-50/25 p-4 rounded-2xl border border-rose-100/50">
+                        <div className="border-b border-rose-100 pb-1.5 flex justify-between items-center">
+                          <span className="text-[10px] font-mono font-bold tracking-widest text-rose-700 uppercase flex items-center gap-1">
+                            <span>✦ Special Consulting Contracts & Retainers</span>
+                          </span>
+                          <span className="text-[9px] font-medium font-mono text-rose-500">
+                            Custom Billing Contracts Enabled
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          {customPeriodSlots.map((slotObj) => {
+                            const isBooked = slotObj.isBooked;
+                            const displayName = slotObj.slotType === 'day' 
+                              ? '1-Day Advisory Offering' 
+                              : slotObj.slotType === '2-day'
+                                ? '2-Day Strategic Retainer'
+                                : slotObj.slotType === 'week'
+                                  ? '1-Week CEO Consulting Contract'
+                                  : slotObj.slotType === 'month'
+                                    ? '1-Month Executive Retainer Advisory'
+                                    : `${slotObj.slotType || 'Custom'} Offering`;
+
+                            return (
+                              <div
+                                key={slotObj.id}
+                                className={`p-4 rounded-xl border flex flex-col justify-between gap-3 transition-all ${
+                                  isBooked 
+                                    ? 'bg-indigo-50 border-indigo-100 text-indigo-900 shadow-xs' 
+                                    : 'bg-white border-slate-200 hover:border-slate-350 hover:shadow-xs'
+                                }`}
+                              >
+                                <div>
+                                  <div className="flex justify-between items-start">
+                                    <span className="text-xs font-black text-slate-800">{displayName}</span>
+                                    <span className={`text-[9px] font-mono font-black uppercase px-2 py-0.5 rounded-md ${
+                                      isBooked ? 'bg-indigo-500 text-white' : 'bg-emerald-500 text-white'
+                                    }`}>
+                                      {isBooked ? 'Booked' : 'Available'}
+                                    </span>
+                                  </div>
+                                  <p className="text-[10px] text-slate-400 font-mono mt-1">
+                                    Starts {slotObj.startTime} on {slotObj.date}
+                                  </p>
+                                  {slotObj.meetingLink ? (
+                                    <p className="text-[9px] bg-slate-50 text-rose-600 rounded p-1 truncate mt-2 font-mono">
+                                      Room: {slotObj.meetingLink}
+                                    </p>
+                                  ) : (
+                                    <p className="text-[9px] text-slate-400 italic mt-2">
+                                      Direct Consult (No static video room specified)
+                                    </p>
+                                  )}
+                                </div>
+
+                                <div className="flex justify-between items-center mt-2 pt-2 border-t border-slate-100">
+                                  <span className="text-sm font-black text-rose-600 font-sans">
+                                    ₹{slotObj.price !== undefined ? slotObj.price : 'Custom Payout'}
+                                  </span>
+                                  {!isBooked && (
+                                    <button
+                                      type="button"
+                                      onClick={async () => {
+                                        try {
+                                          await api.deleteSlot(slotObj.id);
+                                          await fetchExpertData();
+                                        } catch (err: any) {
+                                          setError(err.message || 'Could not unpublish custom package.');
+                                        }
+                                      }}
+                                      className="text-slate-400 hover:text-red-500 p-1.5 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                                      title="Unpublish Package Offer"
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
                     {renderTimeGroupBlock("Morning Consulting Blocks", morningTimes, "09:00 AM - 11:59 AM UTC")}
                     {renderTimeGroupBlock("Afternoon Consulting Blocks", afternoonTimes, "12:00 PM - 04:59 PM UTC")}
                     {renderTimeGroupBlock("Evening Consulting Blocks", eveningTimes, "05:00 PM - 09:00 PM UTC")}
@@ -542,7 +758,7 @@ export default function ExpertDashboard({ expertProfile, onProfileUpdated }: Exp
                 );
               })()}
 
-            </div>
+            </div>      </div>
 
           </div>
 

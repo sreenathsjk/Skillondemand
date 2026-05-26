@@ -400,7 +400,34 @@ class DatabaseStore {
 
   // --- QUERY UTILS ---
   public getUsers() { return this.data.users; }
-  public getProfiles() { return this.data.profiles; }
+  public getProfiles() {
+    let changed = false;
+    this.data.users.forEach(u => {
+      if (u.role === 'expert') {
+        const hasProfile = this.data.profiles.some(p => p.id === u.id);
+        if (!hasProfile) {
+          this.data.profiles.push({
+            id: u.id,
+            name: u.name,
+            email: u.email,
+            title: 'CEO / Business Executive Advisor',
+            bio: 'Expert executive consulting, leadership guidance, and corporate strategy planning. View premium packages or custom slots to reserve slots.',
+            skills: ['Leadership Advice', 'Executive Advisory'],
+            pricePer30Min: 200,
+            pricePer60Min: 380,
+            averageRating: 5.0,
+            totalSessions: 0,
+            avatarUrl: u.avatarUrl || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80',
+          });
+          changed = true;
+        }
+      }
+    });
+    if (changed) {
+      this.save();
+    }
+    return this.data.profiles;
+  }
   public getSlots() { return this.data.slots; }
   public getBookings() { return this.data.bookings; }
   public getReviews() { return this.data.reviews; }
@@ -470,16 +497,11 @@ class DatabaseStore {
     return null;
   }
 
-  public addSlot(expertId: string, date: string, startTime: string, duration: number) {
+  public addSlot(expertId: string, date: string, startTime: string, duration: number, slotType?: string, price?: number, meetingLink?: string) {
     // Generate simple ID
     const cleanTime = startTime.replace(':', '');
-    const slotId = `${expertId}_${date}_${cleanTime}`;
-
-    // Avoid duplicated ID slot
-    const existingIndex = this.data.slots.findIndex(s => s.id === slotId);
-    if (existingIndex > -1) {
-      return this.data.slots[existingIndex];
-    }
+    const randSuffix = Math.random().toString(36).substring(2, 6);
+    const slotId = `${expertId}_${date}_${cleanTime}_${randSuffix}`;
 
     const newSlot: AvailabilitySlot = {
       id: slotId,
@@ -488,6 +510,9 @@ class DatabaseStore {
       startTime,
       duration,
       isBooked: false,
+      slotType: slotType || 'hour',
+      price: price !== undefined ? Number(price) : undefined,
+      meetingLink: meetingLink || undefined,
     };
     this.data.slots.push(newSlot);
     this.save();
@@ -545,9 +570,15 @@ class DatabaseStore {
       throw new Error('Learner session not found.');
     }
 
-    const price = duration === 30 ? expert.pricePer30Min : expert.pricePer60Min;
+    // Support custom slot pricing and options
+    const price = slot.price !== undefined ? Number(slot.price) : (duration === 30 ? expert.pricePer30Min : expert.pricePer60Min);
     const commission = parseFloat((price * 0.20).toFixed(2));
     const expertPayout = parseFloat((price * 0.80).toFixed(2));
+
+    // Support optional or custom meeting room configurations (optional Google meet links)
+    const meetLink = slot.meetingLink || (slot.slotType === 'hour' || !slot.slotType 
+      ? `https://meet.google.com/sb-${Math.random().toString(36).substring(2, 5)}-${Math.random().toString(36).substring(2, 6)}-${Math.random().toString(36).substring(2, 5)}`
+      : undefined);
 
     const booking: Booking = {
       id: 'b_' + Math.random().toString(36).substring(2, 11),
@@ -556,12 +587,12 @@ class DatabaseStore {
       expertId: expert.id,
       expertName: expert.name,
       dateTime: `${slot.date}T${slot.startTime}:00.000Z`,
-      duration,
+      duration: slot.duration || duration,
       amountPaid: price,
       platformFee: commission,
       expertAmount: expertPayout,
       status: 'pending', // Pending payment capture
-      meetingLink: `https://meet.google.com/sb-${Math.random().toString(36).substring(2, 5)}-${Math.random().toString(36).substring(2, 6)}-${Math.random().toString(36).substring(2, 5)}`,
+      meetingLink: meetLink,
       createdAt: new Date().toISOString(),
       slotId: slot.id,
       orderId,

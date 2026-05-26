@@ -35,10 +35,13 @@ export interface AvailabilitySlot {
   expertId: string;
   date: string; // YYYY-MM-DD
   startTime: string; // HH:MM
-  duration: number; // in minutes (e.g., 30 or 60)
+  duration: number; // in minutes or days/weeks representation
   isBooked: boolean;
   isLocked?: boolean;
   lockedUntil?: string; // ISO String
+  slotType?: string; // 'hour' | 'day' | '2-day' | 'week' | 'month'
+  price?: number; // custom slot price (overrides expert default list rates)
+  meetingLink?: string; // optional custom location / room url
 }
 
 export type BookingStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled';
@@ -50,12 +53,12 @@ export interface Booking {
   expertId: string;
   expertName: string;
   dateTime: string; // ISO string combine date & time
-  duration: number; // 30 or 60 min
+  duration: number; // minutes or days
   amountPaid: number;
   platformFee: number; // 20%
   expertAmount: number; // 80%
   status: BookingStatus;
-  meetingLink: string;
+  meetingLink?: string; // optional
   createdAt: string;
   slotId: string;
   orderId?: string; // Razorpay Order ID

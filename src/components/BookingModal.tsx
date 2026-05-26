@@ -144,7 +144,9 @@ export default function BookingModal({ expert, slots, onClose, onSuccess }: Book
   };
 
   // Calculate pricing summary variables
-  const sessionFee = duration === 30 ? expert.pricePer30Min : expert.pricePer60Min;
+  const sessionFee = (selectedSlot && selectedSlot.price !== undefined)
+    ? selectedSlot.price
+    : (duration === 30 ? expert.pricePer30Min : expert.pricePer60Min);
   const systemCommissionVal = parseFloat((sessionFee * 0.20).toFixed(2));
   const expertPayoutSplit = parseFloat((sessionFee * 0.80).toFixed(2));
 
@@ -328,21 +330,35 @@ export default function BookingModal({ expert, slots, onClose, onSuccess }: Book
                               setSelectedSlot(slot);
                             }
                           }}
-                          className={`py-3 px-3 rounded-xl border text-xs font-semibold text-center transition-all cursor-pointer flex flex-col items-center justify-between min-h-[90px] ${
+                          className={`py-3.5 px-3 rounded-2xl border text-xs font-semibold text-center transition-all cursor-pointer flex flex-col items-center justify-between min-h-[105px] ${
                             isBooked
                               ? 'bg-slate-50 border-slate-100 text-slate-400 cursor-not-allowed opacity-60'
                               : isSelected
                                 ? 'bg-slate-900 text-white border-slate-900 shadow-sm ring-2 ring-rose-500/10'
-                                : 'bg-white border-slate-100 text-slate-700 hover:border-slate-300'
+                                : 'bg-white border-slate-100 text-slate-700 hover:border-slate-350 hover:shadow-xs'
                           }`}
                         >
-                          <div className="flex items-center gap-1">
-                            <Clock className={`h-3.5 w-3.5 ${isBooked ? 'text-slate-300' : isSelected ? 'text-rose-400' : 'text-slate-400'}`} />
+                          <div className="flex items-center gap-1.5 font-bold">
+                            <Clock className={`h-3.5 w-3.5 ${isBooked ? 'text-slate-300' : isSelected ? 'text-rose-450' : 'text-slate-400'}`} />
                             <span className={isBooked ? 'line-through text-slate-400' : ''}>{slot.startTime}</span>
                           </div>
-                          <span className={`text-[9px] font-mono opacity-85 ${isBooked ? 'text-slate-400' : isSelected ? 'text-rose-300' : 'text-slate-400'}`}>
-                            {slot.duration} Min length
-                          </span>
+
+                          <div className="text-center my-0.5">
+                            <span className={`text-[10px] block font-extrabold ${isSelected ? 'text-rose-350' : 'text-slate-900'}`}>
+                              {slot.slotType === 'day' 
+                                ? '1-Day advisory' 
+                                : slot.slotType === '2-day'
+                                  ? '2-Days retainer'
+                                  : slot.slotType === 'week'
+                                    ? '1-Week контракт'
+                                    : slot.slotType === 'month'
+                                      ? '1-Month contract'
+                                      : `${slot.duration} Mins Session`}
+                            </span>
+                            <span className={`text-[9px] font-mono block font-black ${isSelected ? 'text-rose-200' : 'text-rose-650'}`}>
+                              ₹{slot.price !== undefined ? slot.price : (slot.duration === 30 ? expert.pricePer30Min : expert.pricePer60Min)}
+                            </span>
+                          </div>
                           
                           {/* Slot Status Labels */}
                           <span className={`text-[8.5px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-md font-bold ${
@@ -350,7 +366,7 @@ export default function BookingModal({ expert, slots, onClose, onSuccess }: Book
                               ? 'bg-slate-200/50 text-slate-500' 
                               : isSelected 
                                 ? 'bg-rose-500 text-white shadow-xs' 
-                                : 'bg-emerald-50 text-emerald-600 border border-emerald-100/50'
+                                : 'bg-emerald-50 text-emerald-650 border border-emerald-100/50'
                           }`}>
                             {isBooked ? 'Booked' : isSelected ? 'Selected' : 'Available'}
                           </span>
@@ -368,48 +384,79 @@ export default function BookingModal({ expert, slots, onClose, onSuccess }: Book
                     <span className="text-[10px] font-mono font-medium uppercase tracking-wider text-slate-400 block mb-2">
                       3. Duration & Payout Summary
                     </span>
-                    <div className="flex gap-3">
-                      <button
-                        type="button"
-                        onClick={() => setDuration(30)}
-                        className={`flex-1 p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
-                          duration === 30
-                            ? 'bg-rose-50 border-rose-300 text-rose-950 font-bold shadow-xs'
-                            : 'bg-white border-slate-100 text-slate-600 hover:border-slate-200'
-                        }`}
-                      >
-                        <span className="block text-[10px] font-mono uppercase tracking-wider">
-                          Standard consulting
-                        </span>
-                        <div className="flex justify-between items-baseline mt-1">
-                          <span className="text-sm font-black">30 Minutes</span>
-                          <span className="text-sm font-extrabold text-rose-600">₹{expert.pricePer30Min}</span>
-                        </div>
-                      </button>
+                    {!selectedSlot.slotType || selectedSlot.slotType === 'hour' ? (
+                      <div className="flex gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setDuration(30)}
+                          className={`flex-1 p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
+                            duration === 30
+                              ? 'bg-rose-50 border-rose-300 text-rose-950 font-bold shadow-xs'
+                              : 'bg-white border-slate-100 text-slate-600 hover:border-slate-200'
+                          }`}
+                        >
+                          <span className="block text-[10px] font-mono uppercase tracking-wider">
+                            Standard consulting
+                          </span>
+                          <div className="flex justify-between items-baseline mt-1">
+                            <span className="text-sm font-black">30 Minutes</span>
+                            <span className="text-sm font-extrabold text-rose-600">₹{selectedSlot.price !== undefined ? selectedSlot.price : expert.pricePer30Min}</span>
+                          </div>
+                        </button>
 
-                      <button
-                        type="button"
-                        onClick={() => setDuration(60)}
-                        className={`flex-1 p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
-                          duration === 60
-                            ? 'bg-rose-50 border-rose-300 text-rose-950 font-bold shadow-xs'
-                            : 'bg-white border-slate-100 text-slate-600 hover:border-slate-200'
-                        }`}
-                      >
-                        <span className="block text-[10px] font-mono uppercase tracking-wider">
-                          Extended consulting
-                        </span>
-                        <div className="flex justify-between items-baseline mt-1">
-                          <span className="text-sm font-black">60 Minutes</span>
-                          <span className="text-sm font-extrabold text-rose-600">₹{expert.pricePer60Min}</span>
+                        <button
+                          type="button"
+                          disabled={selectedSlot.price !== undefined}
+                          onClick={() => setDuration(60)}
+                          className={`flex-1 p-3.5 rounded-xl border text-left transition-all ${
+                            selectedSlot.price !== undefined ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                          } ${
+                            duration === 60
+                              ? 'bg-rose-50 border-rose-300 text-rose-950 font-bold shadow-xs'
+                              : 'bg-white border-slate-100 text-slate-600 hover:border-slate-200'
+                          }`}
+                        >
+                          <span className="block text-[10px] font-mono uppercase tracking-wider">
+                            Extended consulting
+                          </span>
+                          <div className="flex justify-between items-baseline mt-1">
+                            <span className="text-sm font-black">60 Minutes</span>
+                            <span className="text-sm font-extrabold text-rose-600">₹{expert.pricePer60Min}</span>
+                          </div>
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="bg-white p-4 rounded-xl border border-rose-100/40 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                        <div>
+                          <span className="text-xs font-black text-rose-650 uppercase block font-mono">
+                            Premium Retainer Engagement Contract
+                          </span>
+                          <p className="text-[11px] text-slate-500 mt-1">
+                            Integrated {selectedSlot.slotType === 'day' 
+                              ? '1-Day Advisory Offering' 
+                              : selectedSlot.slotType === '2-day'
+                                ? '2-Day Strategic Retainer'
+                                : selectedSlot.slotType === 'week'
+                                  ? '1-Week CEO Consulting Contract'
+                                  : '1-Month Executive Retainer Advisory'} offering.
+                          </p>
                         </div>
-                      </button>
-                    </div>
+                        <div className="bg-rose-50 text-rose-600 font-extrabold px-3 py-1.5 rounded-lg text-sm whitespace-nowrap">
+                          ₹{selectedSlot.price} Total
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="border-t border-slate-200/50 pt-3 flex justify-between text-xs text-slate-500">
                     <div className="space-y-1">
-                      <div>Includes autogenerated secure video conference linkage</div>
+                      <div>
+                        {selectedSlot.meetingLink 
+                          ? `Room Link: Direct access to custom meeting room linked by CEO`
+                          : (!selectedSlot.slotType || selectedSlot.slotType === 'hour'
+                              ? `Includes autogenerated secure video conference linkage`
+                              : `Direct physical or specialized coordinate advisory (consult details)`)}
+                      </div>
                       <div>Platform commission is calculated at a standard 20% rate</div>
                     </div>
                     <div className="text-right font-semibold text-slate-800">

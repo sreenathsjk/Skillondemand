@@ -121,15 +121,21 @@ export default function LearnerDashboard({ onWriteReviewSuccess }: LearnerDashbo
 
                       {/* Launch direct call Link */}
                       <div className="flex items-center gap-2 shrink-0">
-                        <a 
-                          href={b.meetingLink}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="bg-slate-900 hover:bg-rose-600 text-white rounded-xl text-xs font-semibold px-4 py-2.5 transition-colors flex items-center gap-1.5 shadow-xs"
-                        >
-                          <Video className="h-4 w-4" />
-                          <span>Launch Google Meet</span>
-                        </a>
+                        {b.meetingLink ? (
+                          <a 
+                            href={b.meetingLink}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="bg-slate-900 hover:bg-rose-600 text-white rounded-xl text-xs font-semibold px-4 py-2.5 transition-colors flex items-center gap-1.5 shadow-xs"
+                          >
+                            <Video className="h-4 w-4" />
+                            <span>{b.meetingLink.includes('meet.google.com') ? 'Launch Google Meet' : 'Join Link'}</span>
+                          </a>
+                        ) : (
+                          <span className="text-[10px] font-mono text-slate-400 italic bg-slate-50 border border-slate-100 px-3 py-2 rounded-xl text-center">
+                            Direct Coordinate Consult
+                          </span>
+                        )}
                       </div>
                     </div>
                   ))}

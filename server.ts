@@ -332,14 +332,22 @@ function getSubSkillsForCategory(category: string): string[] {
       return;
     }
 
-    const { date, startTime, duration } = req.body;
+    const { date, startTime, duration, slotType, price, meetingLink } = req.body;
     if (!date || !startTime || !duration) {
       res.status(400).json({ error: 'Please submit a clean date, standard startTime (HH:MM) and duration parameter.' });
       return;
     }
 
     try {
-      const slot = dbStore.addSlot(req.user.id, date, startTime, Number(duration));
+      const slot = dbStore.addSlot(
+        req.user.id, 
+        date, 
+        startTime, 
+        Number(duration),
+        slotType,
+        price !== undefined ? Number(price) : undefined,
+        meetingLink
+      );
       res.json({ message: 'Availability slot created', slot });
     } catch (e: any) {
       res.status(400).json({ error: e.message });

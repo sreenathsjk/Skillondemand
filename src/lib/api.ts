@@ -270,7 +270,34 @@ class LocalDatabaseClient {
       localStorage.setItem('skillbridge_local_db', JSON.stringify(defaultDb));
       return defaultDb;
     }
-    return JSON.parse(raw);
+    const db = JSON.parse(raw);
+    let changed = false;
+    db.users.forEach((u: any) => {
+      if (u.role === 'expert') {
+        const hasProf = db.profiles.some((p: any) => p.id === u.id);
+        if (!hasProf) {
+          db.profiles.push({
+            id: u.id,
+            name: u.name,
+            email: u.email,
+            title: 'CEO / Business Executive Advisor',
+            bio: 'Expert executive consulting, leadership guidance, and corporate strategy planning. View premium packages or custom slots to reserve slots.',
+            skills: ['Leadership Advice', 'Executive Advisory'],
+            pricePer30Min: 200,
+            pricePer60Min: 380,
+            averageRating: 5.0,
+            totalSessions: 0,
+            avatarUrl: u.avatarUrl || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80',
+            featured: false
+          });
+          changed = true;
+        }
+      }
+    });
+    if (changed) {
+      this.saveStore(db);
+    }
+    return db;
   }
 
   private saveStore(db: any) {
@@ -469,13 +496,17 @@ class LocalDatabaseClient {
     const db = this.getStore();
     const current = db.currentUser || db.users[1];
     
+    const randSuffix = Math.random().toString(36).substring(2, 6);
     const newSlot: AvailabilitySlot = {
-      id: `${current.id}_${data.date}_${data.startTime.replace(':', '')}`,
+      id: `${current.id}_${data.date}_${data.startTime.replace(':', '')}_${randSuffix}`,
       expertId: current.id,
       date: data.date,
       startTime: data.startTime,
       duration: data.duration,
       isBooked: false,
+      slotType: data.slotType || 'hour',
+      price: data.price !== undefined ? Number(data.price) : undefined,
+      meetingLink: data.meetingLink || undefined,
     };
     
     db.slots = db.slots.filter((s: any) => s.id !== newSlot.id);
@@ -802,6 +833,9 @@ export const api = {
     date: string;
     startTime: string;
     duration: number;
+    slotType?: string;
+    price?: number;
+    meetingLink?: string;
   }): Promise<{ message: string; slot: AvailabilitySlot }> {
     logMode();
     if (isStaticHost) {
