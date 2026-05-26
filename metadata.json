@@ -1,0 +1,8 @@
+{
+  "name": "SkillOnDemand",
+  "description": "A Skill-on-Demand platform to instantly book 30-60 minute 1-on-1 sessions with curated industry experts.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
