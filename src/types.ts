@@ -27,6 +27,7 @@ export interface ExpertProfile {
   totalSessions: number;
   avatarUrl: string;
   featured?: boolean;
+  openSlotsCount?: number;
 }
 
 export interface AvailabilitySlot {

@@ -247,7 +247,14 @@ function getSubSkillsForCategory(category: string): string[] {
       profiles = profiles.filter(p => p.averageRating >= Number(minRating));
     }
 
-    res.json(profiles);
+    // Dynamic slots open calculation
+    const slots = dbStore.getSlots();
+    const profilesWithSlotsCount = profiles.map(p => {
+      const openSlotsCount = slots.filter(s => s.expertId === p.id && !s.isBooked).length;
+      return { ...p, openSlotsCount };
+    });
+
+    res.json(profilesWithSlotsCount);
   });
 
   // Specific profile read

@@ -425,7 +425,11 @@ class LocalDatabaseClient {
       list = list.filter(p => p.averageRating >= filters.minRating);
     }
 
-    return list;
+    const slots = db.slots || [];
+    return list.map(p => {
+      const openSlotsCount = slots.filter((s: any) => s.expertId === p.id && !s.isBooked).length;
+      return { ...p, openSlotsCount };
+    });
   }
 
   public getExpertDetail(id: string) {

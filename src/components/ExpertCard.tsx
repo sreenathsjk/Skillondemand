@@ -56,6 +56,22 @@ export default function ExpertCard({ expert, onSelect, onMouseEnter, onMouseLeav
               ({expert.totalSessions} completed sessions)
             </span>
           </div>
+
+          {/* Compact Slot Availability status indicator */}
+          <div className="flex items-center gap-1.5 mt-2.5" id={`slot-badge-${expert.id}`}>
+            <span className={`inline-block h-2 w-2 rounded-full shrink-0 ${
+              (expert.openSlotsCount ?? 0) > 0 ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'
+            }`} />
+            <span className={`text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 pr-2.5 rounded-md border ${
+              (expert.openSlotsCount ?? 0) > 0 
+                ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
+                : 'bg-slate-50 text-slate-500 border-slate-100'
+            }`}>
+              {expert.openSlotsCount !== undefined 
+                ? `${expert.openSlotsCount} slots open` 
+                : 'Available'}
+            </span>
+          </div>
         </div>
       </div>
 

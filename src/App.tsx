@@ -637,11 +637,11 @@ export default function App() {
                   id="expert-focus-panel" 
                   className={`sticky top-20 transition-all duration-350 rounded-3xl ${
                     isHoveringCard 
-                      ? 'ring-4 ring-rose-500/35 border-rose-300 shadow-xl shadow-rose-500/15 translate-y-[-2px] scale-[1.01] bg-rose-500/5 animate-[pulse_2s_infinite]' 
+                      ? 'ring-4 ring-rose-500/35 border-rose-300 shadow-xl shadow-rose-500/15 translate-y-[-2px] scale-[1.01] bg-rose-500/5' 
                       : ''
                   }`}
                 >
-                  <div className={`transition-all duration-350 rounded-3xl border border-dashed p-12 text-center text-xs ${
+                  <div className={`transition-all duration-350 rounded-3xl border border-dashed p-10 text-center text-xs ${
                     isHoveringCard 
                       ? 'border-rose-300 bg-rose-50/50 text-rose-600 font-semibold' 
                       : 'bg-white/80 border-slate-200/90 text-slate-400 shadow-xs'
@@ -649,11 +649,38 @@ export default function App() {
                     <Award className={`h-8 w-8 mx-auto mb-3 transition-all duration-350 ${
                       isHoveringCard ? 'text-rose-500 scale-125 rotate-6' : 'text-slate-300'
                     }`} />
-                    <span>
+                    <span className="block mb-6">
                       {isHoveringCard 
                         ? 'Ready to proceed? Click "Consult Now" on the expert card to instantly open their dynamic schedule page and secure slot packages!'
                         : 'Select an industry expert "Consult now" card to open their detailed advisor page, reviews ledger, and book session slots immediately!'}
                     </span>
+
+                    {/* Highly polished visual Legend matching Slot Picker colors */}
+                    <div className="pt-6 border-t border-slate-100 dark:border-slate-200 text-left space-y-3">
+                      <span className="text-[10px] uppercase font-mono font-bold tracking-wider text-slate-400 block text-center">
+                        Slot Availability Legend
+                      </span>
+                      <div className="flex flex-wrap items-center justify-center gap-3">
+                        <div className="flex items-center gap-1.5">
+                          <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" />
+                          <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-md font-bold bg-emerald-50 text-emerald-600 border border-emerald-100/50">
+                            Available
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="inline-block h-2 w-2 rounded-full bg-rose-500 animate-pulse" />
+                          <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-md font-bold bg-rose-500 text-white shadow-xs">
+                            Selected
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="inline-block h-2 w-2 rounded-full bg-slate-300" />
+                          <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-md font-bold bg-slate-205/50 text-slate-500 bg-slate-200/50">
+                            Booked
+                          </span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
