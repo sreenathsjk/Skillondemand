@@ -1,6 +1,7 @@
 import React from 'react';
 import { ExpertProfile } from '../types';
 import { Star, ShieldCheck, Tag, Sparkles, ArrowRight } from 'lucide-react';
+import { getCleanImageUrl } from '../lib/api';
 
 interface ExpertCardProps {
   key?: string | number;
@@ -28,7 +29,7 @@ export default function ExpertCard({ expert, onSelect, onMouseEnter, onMouseLeav
         )}
 
         <img
-          src={expert.avatarUrl}
+          src={getCleanImageUrl(expert.avatarUrl)}
           alt={expert.name}
           referrerPolicy="no-referrer"
           className="h-16 w-16 md:h-20 md:w-20 rounded-2xl object-cover shadow-sm bg-slate-100 ring-2 ring-slate-100 group-hover:scale-[1.02] transition-transform duration-300"

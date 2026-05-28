@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Booking, AvailabilitySlot, Review, ExpertProfile } from '../types';
-import { api } from '../lib/api';
+import { api, getCleanImageUrl } from '../lib/api';
 import { 
   Calendar, 
   Clock, 
@@ -779,7 +779,7 @@ export default function ExpertDashboard({ expertProfile, onProfileUpdated }: Exp
             {/* Profile Avatar visual circle preview */}
             <div className="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100 select-none">
               <img 
-                src={avatarUrlText || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=250'} 
+                src={getCleanImageUrl(avatarUrlText) || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=250'} 
                 alt="Avatar Preview" 
                 referrerPolicy="no-referrer"
                 className="h-16 w-16 rounded-2xl object-cover border border-slate-200 shadow-xs shrink-0 bg-white"
@@ -821,8 +821,8 @@ export default function ExpertDashboard({ expertProfile, onProfileUpdated }: Exp
                   type="text"
                   required
                   value={avatarUrlText}
-                  onChange={(e) => setAvatarUrlText(e.target.value)}
-                  placeholder="Paste public unsplash/graphic portrait link"
+                  onChange={(e) => setAvatarUrlText(getCleanImageUrl(e.target.value))}
+                  placeholder="Paste public unsplash/graphic portrait link or Google Drive link"
                   className="w-full text-xs p-2.5 rounded-xl border border-slate-200 focus:outline-hidden focus:ring-1 focus:ring-rose-500 bg-white font-mono shadow-xs"
                 />
               </div>

@@ -20,121 +20,34 @@ const logMode = () => {
   }
 };
 
-// Seed constants for the frontend static database if the network is absent
-const SEED_PROFILES: ExpertProfile[] = [
-  {
-    id: 'u_expert1',
-    name: 'John Doe',
-    email: 'johndoe@example.com',
-    title: 'Senior Software Architect @ Google',
-    bio: 'Over 12 years of core development experience building search pipelines and low-latency API architectures. Ask me about React/Vite optimizations, scaling Express/Node setups, TypeScript safety, database modeling, and technical system design reviews.',
-    skills: ['Coding', 'System Design', 'React', 'Node.js', 'TypeScript', 'PostgreSQL', 'Technical & IT Skills', 'Freelance Services', 'Professional Services'],
-    pricePer30Min: 1500,
-    pricePer60Min: 2800,
-    averageRating: 4.8,
-    totalSessions: 142,
-    avatarUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=150&h=150&q=80',
-    featured: true,
-  },
-  {
-    id: 'u_expert2',
-    name: 'Priya Sharma',
-    email: 'priyasharma@example.com',
-    title: 'Lead Data Architect & Excel Wizard',
-    bio: 'Struggling with complex spreadsheet templates, lookup macros, power query setups, or relational SQL modeling? I am a Lead Data Architect specializing in converting unorganized business inputs into high-impact visual interactive dashboards.',
-    skills: ['Excel', 'SQL', 'Data Analytics', 'PowerBI', 'Python', 'Financial Modeling', 'Technical & IT Skills', 'Professional Services', 'Freelance Services'],
-    pricePer30Min: 1000,
-    pricePer60Min: 1800,
-    averageRating: 4.9,
-    totalSessions: 89,
-    avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&h=150&q=80',
-    featured: true,
-  },
-  {
-    id: 'u_expert3',
-    name: 'Sarah Jenkins',
-    email: 'sarahjenkins@example.com',
-    title: 'Executive English & Business Pitch Coach',
-    bio: 'Former BBC analyst and professional speech advisor. I will polish your executive pitch deck flow, enhance business email etiquette, train proper business accents, and prepare you to present flawlessly to global venture capitalists and directors.',
-    skills: ['English', 'Accent Training', 'Business Communication', 'Presentation Skills', 'Resume Review', 'Education & Tutoring', 'Business & Consulting', 'Professional Services'],
-    pricePer30Min: 1200,
-    pricePer60Min: 2200,
-    averageRating: 4.7,
-    totalSessions: 215,
-    avatarUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&h=150&q=80',
-    featured: false,
-  },
-  {
-    id: 'u_expert4',
-    name: 'Alex Mercer',
-    email: 'alexmercer@example.com',
-    title: 'Principal Product Designer @ Airbnb',
-    bio: 'Building user-centric, responsive, beautiful mobile-first experiences. Reach out for surgical portfolio inspections, constructive Figma workspace design reviews, color system layouts, and interactive micro-animations counseling.',
-    skills: ['UI/UX Design', 'Figma', 'Design Systems', 'Mobile App', 'User Research', 'Framer', 'Creative & Design', 'Freelance Services', 'Skill-Based Training'],
-    pricePer30Min: 1400,
-    pricePer60Min: 2500,
-    averageRating: 4.9,
-    totalSessions: 67,
-    avatarUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=150&h=150&q=80',
-    featured: true,
-  },
-  {
-    id: 'u_expert5',
-    name: 'Marcus Thorne',
-    email: 'marcusthorne@example.com',
-    title: 'Ex-Meta Lead Recruiter & Interview Coach',
-    bio: 'Having scanned over 50k resumes, I know exactly what companies search for. Let us run simulated mock behavioral questions, deep tech architecture trial prep, and resume rewriting workshops to push past resume tracking screening systems.',
-    skills: ['Interview Prep', 'Resume Writing', 'Tech Interviews', 'Career Growth', 'Salary Negotiation', 'Business & Consulting', 'Skill-Based Training', 'Professional Services'],
-    pricePer30Min: 1800,
-    pricePer60Min: 3200,
-    averageRating: 5.0,
-    totalSessions: 312,
-    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80',
-    featured: true,
-  },
-  {
-    id: 'u_expert6',
-    name: 'Ramesh Kumar',
-    email: 'rameshkumar@example.com',
-    title: 'Master Electrician & Smart Home Automation expert',
-    bio: 'With over 15 years servicing urban complexes, I diagnose complex electrical distribution issues, consult on home automation standards, and coach junior technicians on electrical code compliance, residential safety, and smart grids.',
-    skills: ['Electrical', 'Appliance Repair', 'Blue-Collar / Local Services', 'Home & Personal Services', 'Professional Services'],
-    pricePer30Min: 800,
-    pricePer60Min: 1500,
-    averageRating: 4.8,
-    totalSessions: 94,
-    avatarUrl: 'https://images.unsplash.com/photo-1540569014015-19a7be504e3a?auto=format&fit=crop&w=150&h=150&q=80',
-    featured: true,
-  },
-  {
-    id: 'u_expert7',
-    name: 'Dr. Emily Stone',
-    email: 'emilystone@example.com',
-    title: 'Professional SAT/ACT Math and Calculus Tutor',
-    bio: 'Guiding high school and university students to perfect quantitative assessment scores. I structure customized math training frameworks, offer surgical concept coaching in real analysis/geometry, and deliver test-taking speed drills.',
-    skills: ['Math', 'Calculus', 'Tutoring', 'Education & Tutoring', 'Skill-Based Training', 'Professional Services'],
-    pricePer30Min: 900,
-    pricePer60Min: 1650,
-    averageRating: 4.9,
-    totalSessions: 182,
-    avatarUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=150&h=150&q=80',
-    featured: false,
-  },
-  {
-    id: 'u_expert8',
-    name: 'David Chen',
-    email: 'davidchen@example.com',
-    title: 'Holistic Wellness & Strength Conditioning Coach',
-    bio: 'Certified nutrition specialist and somatic mindfulness counselor. I build targeted weight optimization dietary guidelines, custom posture recovery drills, and breathing flow sessions intended for professionals spending long hours in seating hubs.',
-    skills: ['Yoga', 'Nutrition', 'Health & Wellness', 'Home & Personal Services', 'Professional Services'],
-    pricePer30Min: 1100,
-    pricePer60Min: 2000,
-    averageRating: 5.0,
-    totalSessions: 53,
-    avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&h=150&q=80',
-    featured: true,
+/**
+ * Utility function to convert Google Drive sharing and other URLs to direct raw image URLs
+ */
+export function getCleanImageUrl(url: string | undefined): string {
+  if (!url) return '';
+  const trimmed = url.trim();
+
+  // Try matching standard Google Drive structures
+  const fileIdMatch = trimmed.match(/\/file\/d\/([a-zA-Z0-9_-]{25,50})/);
+  if (fileIdMatch && fileIdMatch[1]) {
+    return `https://lh3.googleusercontent.com/d/${fileIdMatch[1]}`;
   }
-];
+
+  const idParamMatch = trimmed.match(/[?&]id=([a-zA-Z0-9_-]{25,50})/);
+  if (idParamMatch && idParamMatch[1]) {
+    return `https://lh3.googleusercontent.com/d/${idParamMatch[1]}`;
+  }
+
+  const dIdMatch = trimmed.match(/\/d\/([a-zA-Z0-9_-]{25,50})/);
+  if (dIdMatch && dIdMatch[1]) {
+    return `https://lh3.googleusercontent.com/d/${dIdMatch[1]}`;
+  }
+
+  return trimmed;
+}
+
+// Seed constants for the frontend static database if the network is absent
+const SEED_PROFILES: ExpertProfile[] = [];
 
 class LocalDatabaseClient {
   private getStore() {
@@ -142,7 +55,9 @@ class LocalDatabaseClient {
     if (raw) {
       try {
         const testDb = JSON.parse(raw);
-        if (!testDb.profiles || !testDb.profiles.some((p: any) => p.id === 'u_expert6')) {
+        // Force reset if users lack the phone attribute
+        const needsReset = !testDb.users || testDb.users.length === 0 || testDb.users.some((u: any) => !u.phone);
+        if (needsReset) {
           localStorage.removeItem('skillbridge_local_db');
           raw = null;
         }
@@ -161,7 +76,7 @@ class LocalDatabaseClient {
       const seedUsers: User[] = [
         {
           id: 'u_learner1',
-          email: 'learner1@example.com',
+          phone: '9876543210',
           name: 'James Walker',
           role: 'learner',
           avatarUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80',
@@ -169,7 +84,7 @@ class LocalDatabaseClient {
         },
         {
           id: 'u_learner2',
-          email: 'content2u.sj@gmail.com',
+          phone: '9999999999',
           name: 'Sarah Jordan',
           role: 'learner',
           avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80',
@@ -177,6 +92,7 @@ class LocalDatabaseClient {
         },
         ...SEED_PROFILES.map(p => ({
           id: p.id,
+          phone: p.phone || '9999999999',
           email: p.email,
           name: p.name,
           role: 'expert' as UserRole,
@@ -185,7 +101,7 @@ class LocalDatabaseClient {
         })),
         {
           id: 'u_admin1',
-          email: 'admin@skillondemand.io',
+          phone: '8888888888',
           name: 'SkillOnDemand Admin',
           role: 'admin',
           avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&h=150&q=80',
@@ -276,9 +192,10 @@ class LocalDatabaseClient {
       if (u.role === 'expert') {
         const hasProf = db.profiles.some((p: any) => p.id === u.id);
         if (!hasProf) {
-          db.profiles.push({
+          db.profiles.unshift({
             id: u.id,
             name: u.name,
+            phone: u.phone,
             email: u.email,
             title: 'CEO / Business Executive Advisor',
             bio: 'Expert executive consulting, leadership guidance, and corporate strategy planning. View premium packages or custom slots to reserve slots.',
@@ -304,16 +221,16 @@ class LocalDatabaseClient {
     localStorage.setItem('skillbridge_local_db', JSON.stringify(db));
   }
 
-  public magicLogin(email: string, name?: string, role?: UserRole) {
+  public magicLogin(phone: string, name?: string, role?: UserRole) {
     const db = this.getStore();
-    const emailSanitized = email.toLowerCase().trim();
-    let user = db.users.find((u: any) => u.email.toLowerCase() === emailSanitized);
+    const phoneSanitized = phone.trim();
+    let user = db.users.find((u: any) => u.phone === phoneSanitized);
     
     if (!user) {
       user = {
         id: 'u_' + Math.random().toString(36).substring(2, 11),
-        email: emailSanitized,
-        name: name || email.split('@')[0],
+        phone: phoneSanitized,
+        name: name || `User_${phoneSanitized.slice(-4)}`,
         role: role || 'learner',
         avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150',
         createdAt: new Date().toISOString()
@@ -323,9 +240,10 @@ class LocalDatabaseClient {
     
     // Ensure if role is expert, we have a profile
     if (user.role === 'expert' && !db.profiles.some((p: any) => p.id === user.id)) {
-      db.profiles.push({
+      db.profiles.unshift({
         id: user.id,
         name: user.name,
+        phone: user.phone,
         email: user.email,
         title: 'SENIOR SOFTWARE CONSULTANT',
         bio: 'Newly registered platform consultant. Edit your biography profile here.',
@@ -348,8 +266,8 @@ class LocalDatabaseClient {
   public getMe() {
     const db = this.getStore();
     if (!db.currentUser) {
-      // Return Sarah Jordan default
-      db.currentUser = db.users[1];
+      // Return learner1 default
+      db.currentUser = db.users[0];
       this.saveStore(db);
     }
     return db.currentUser;
@@ -357,7 +275,7 @@ class LocalDatabaseClient {
 
   public onboard(role: UserRole, name?: string) {
     const db = this.getStore();
-    let current = db.currentUser || db.users[1];
+    let current = db.currentUser || db.users[0];
     const userIndex = db.users.findIndex((u: any) => u.id === current.id);
     
     if (userIndex > -1) {
@@ -365,9 +283,10 @@ class LocalDatabaseClient {
       if (name) db.users[userIndex].name = name;
       
       if (role === 'expert' && !db.profiles.some((p: any) => p.id === current.id)) {
-        db.profiles.push({
+        db.profiles.unshift({
           id: current.id,
           name: db.users[userIndex].name,
+          phone: db.users[userIndex].phone,
           email: db.users[userIndex].email,
           title: 'SENIOR SOFTWARE CONSULTANT',
           bio: 'Newly registered expert. Replace with high-fidelity profile introduction bio.',
@@ -472,6 +391,10 @@ class LocalDatabaseClient {
   public updateExpertProfile(data: any) {
     const db = this.getStore();
     const current = db.currentUser || db.users[1];
+    
+    if (data.avatarUrl) {
+      data.avatarUrl = getCleanImageUrl(data.avatarUrl);
+    }
     
     const idx = db.profiles.findIndex((p: any) => p.id === current.id);
     if (idx > -1) {
@@ -685,23 +608,23 @@ export const api = {
   },
 
   // --- HYBRID ENDPOINTS WITH AUTO-FAILOVER CORES ---
-  async magicLogin(email: string, name?: string, role?: UserRole): Promise<{ token: string; user: User }> {
+  async magicLogin(phone: string, name?: string, role?: UserRole): Promise<{ token: string; user: User }> {
     logMode();
     if (isStaticHost) {
-      return localSimulator.magicLogin(email, name, role);
+      return localSimulator.magicLogin(phone, name, role);
     }
     try {
       const res = await fetch('/api/auth/magic-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, name, role }),
+        body: JSON.stringify({ phone, name, role }),
       });
       if (!res.ok) {
         throw new Error('Failed response');
       }
       return await res.json();
     } catch {
-      return localSimulator.magicLogin(email, name, role);
+      return localSimulator.magicLogin(phone, name, role);
     }
   },
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { User, ExpertProfile, AvailabilitySlot, Review } from './types';
-import { api } from './lib/api';
+import { api, getCleanImageUrl } from './lib/api';
 import Navbar from './components/Navbar';
 import ExpertCard from './components/ExpertCard';
 import BookingModal from './components/BookingModal';
@@ -17,7 +17,7 @@ export default function App() {
   // Authentication states
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [showOnboardModal, setShowOnboardModal] = useState(false);
-  const [authEmail, setAuthEmail] = useState(''); // Email starts clean
+  const [authPhone, setAuthPhone] = useState(''); // Mobile number starts clean
   const [authName, setAuthName] = useState('');
   const [authRole, setAuthRole] = useState<'learner' | 'expert'>('learner');
   const [authError, setAuthError] = useState<string | null>(null);
@@ -104,17 +104,20 @@ export default function App() {
   const handleMagicLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
-    if (!authEmail) {
-      setAuthError('Please submit a clean email address.');
+    if (!authPhone) {
+      setAuthError('Please submit a clean mobile number.');
       return;
     }
 
     try {
-      const resp = await api.magicLogin(authEmail, authName || undefined, authRole);
+      const resp = await api.magicLogin(authPhone, authName || undefined, authRole);
       api.setToken(resp.token);
       setCurrentUser(resp.user);
       setShowOnboardModal(false); // Close the onboarding modal on success
       
+      // Load experts to include the freshly registered one
+      await loadExperts();
+
       // Auto switch tabs
       if (resp.user.role === 'expert') {
         setActiveTab('expert_dashboard');
@@ -135,6 +138,7 @@ export default function App() {
       const resp = await api.onboard(targetRole, currentUser.name);
       api.setToken(resp.token);
       setCurrentUser(resp.user);
+      await loadExperts();
       if (targetRole === 'expert') {
         setActiveTab('expert_dashboard');
       } else {
@@ -152,6 +156,7 @@ export default function App() {
       const resp = await api.onboard(targetRole, currentUser.name);
       api.setToken(resp.token);
       setCurrentUser(resp.user);
+      await loadExperts();
       if (targetRole === 'expert') {
         setActiveTab('expert_dashboard');
       } else if (targetRole === 'admin') {
@@ -405,7 +410,7 @@ export default function App() {
                     {/* Portrait Hero Card */}
                     <div className="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-xs flex flex-col sm:flex-row gap-6 items-center sm:items-start text-center sm:text-left">
                       <img
-                        src={selectedExpert.profile.avatarUrl}
+                        src={getCleanImageUrl(selectedExpert.profile.avatarUrl)}
                         alt={selectedExpert.profile.name}
                         referrerPolicy="no-referrer"
                         className="h-24 w-24 sm:h-28 sm:w-28 rounded-2xl object-cover bg-slate-50 border border-slate-100 shadow-xs shrink-0"
@@ -734,14 +739,14 @@ export default function App() {
 
                 <div className="space-y-1 text-left">
                   <label className="text-[10px] font-mono tracking-wider uppercase text-slate-500 font-bold block mb-0.5">
-                    Email Address
+                    Mobile Number
                   </label>
                   <input
-                    type="email"
+                    type="tel"
                     required
-                    placeholder="email@example.com"
-                    value={authEmail}
-                    onChange={(e) => setAuthEmail(e.target.value)}
+                    placeholder="E.g., 9876543210"
+                    value={authPhone}
+                    onChange={(e) => setAuthPhone(e.target.value)}
                     className="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-white"
                   />
                 </div>

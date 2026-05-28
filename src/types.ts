@@ -6,7 +6,8 @@ export type UserRole = 'learner' | 'expert' | 'admin';
 
 export interface User {
   id: string;
-  email: string;
+  email?: string;
+  phone: string;
   name: string;
   role: UserRole;
   avatarUrl?: string;
@@ -17,7 +18,8 @@ export interface User {
 export interface ExpertProfile {
   id: string; // matches User.id
   name: string;
-  email: string;
+  email?: string;
+  phone?: string;
   title: string;
   bio: string;
   skills: string[];

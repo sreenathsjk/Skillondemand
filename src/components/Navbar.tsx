@@ -5,6 +5,7 @@ import {
   Menu, X, Laptop, ShieldCheck, Mail, ArrowRight, Award, Compass, Heart
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { getCleanImageUrl } from '../lib/api';
 
 interface NavbarProps {
   currentUser: User | null;
@@ -151,7 +152,7 @@ export default function Navbar({
                 className="flex items-center gap-2 bg-slate-50/50 hover:bg-slate-50 p-1 px-2.5 rounded-xl border border-slate-100 transition-colors cursor-pointer"
               >
                 <img
-                  src={currentUser.avatarUrl || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=50&h=50&q=80'}
+                  src={getCleanImageUrl(currentUser.avatarUrl) || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=50&h=50&q=80'}
                   alt={currentUser.name}
                   referrerPolicy="no-referrer"
                   className="h-7 w-7 rounded-lg object-cover ring-2 ring-rose-500/10"
@@ -233,7 +234,7 @@ export default function Navbar({
                     
                     <div className="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex items-center gap-3">
                       <img
-                        src={currentUser.avatarUrl || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=50&h=50&q=80'}
+                        src={getCleanImageUrl(currentUser.avatarUrl) || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=50&h=50&q=80'}
                         alt={currentUser.name}
                         referrerPolicy="no-referrer"
                         className="h-11 w-11 rounded-xl object-cover ring-2 ring-rose-500/10 shrink-0"

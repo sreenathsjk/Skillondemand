@@ -76,20 +76,20 @@ async function startServer() {
   
   // Magic link simulator endpoint
   app.post('/api/auth/magic-login', (req, res) => {
-    const { email, name, role } = req.body;
-    if (!email) {
-      res.status(400).json({ error: 'Email is required' });
+    const { phone, name, role } = req.body;
+    if (!phone) {
+      res.status(400).json({ error: 'Mobile number is required' });
       return;
     }
 
-    const cleanedEmail = email.toLowerCase().trim();
-    let user = dbStore.getUserByEmail(cleanedEmail);
+    const cleanedPhone = phone.trim();
+    let user = dbStore.getUserByPhone(cleanedPhone);
 
     if (!user) {
       // Auto-register on first sign-in
-      const displayDisplayName = name || cleanedEmail.split('@')[0];
+      const displayDisplayName = name || `User_${cleanedPhone.slice(-4)}`;
       const initialRole = role || 'learner';
-      user = dbStore.registerUser(cleanedEmail, displayDisplayName, initialRole);
+      user = dbStore.registerUser(cleanedPhone, displayDisplayName, initialRole);
     }
 
     if (user.isBanned) {
@@ -99,7 +99,7 @@ async function startServer() {
 
     // Generate JWT Session Token
     const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role, name: user.name },
+      { id: user.id, phone: user.phone, role: user.role, name: user.name },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -139,13 +139,14 @@ async function startServer() {
     user.role = role;
     if (name) user.name = name;
 
-    // Create profile if user switch to Expert
+     // Create profile if user switch to Expert
     if (role === 'expert') {
       const existingProfile = dbStore.getProfiles().find(p => p.id === user.id);
       if (!existingProfile) {
-        dbStore.getProfiles().push({
+        dbStore.getProfiles().unshift({
           id: user.id,
           name: user.name,
+          phone: user.phone,
           email: user.email,
           title: 'Curated Expert',
           bio: 'Welcome to my expert session page. Use the available slot widgets below to instantly lock a 30-60 minute consulting call.',
@@ -161,7 +162,7 @@ async function startServer() {
 
     // Rewrite JWT session with updated role
     const updatedToken = jwt.sign(
-      { id: user.id, email: user.email, role: user.role, name: user.name },
+      { id: user.id, phone: user.phone, role: user.role, name: user.name },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -299,6 +300,21 @@ function getSubSkillsForCategory(category: string): string[] {
       return;
     }
 
+    let cleanedAvatarUrl = avatarUrl;
+    if (avatarUrl && typeof avatarUrl === 'string') {
+      const trimmed = avatarUrl.trim();
+      const fileIdMatch = trimmed.match(/\/file\/d\/([a-zA-Z0-9_-]{25,50})/);
+      const idParamMatch = trimmed.match(/[?&]id=([a-zA-Z0-9_-]{25,50})/);
+      const dIdMatch = trimmed.match(/\/d\/([a-zA-Z0-9_-]{25,50})/);
+      if (fileIdMatch && fileIdMatch[1]) {
+        cleanedAvatarUrl = `https://lh3.googleusercontent.com/d/${fileIdMatch[1]}`;
+      } else if (idParamMatch && idParamMatch[1]) {
+        cleanedAvatarUrl = `https://lh3.googleusercontent.com/d/${idParamMatch[1]}`;
+      } else if (dIdMatch && dIdMatch[1]) {
+        cleanedAvatarUrl = `https://lh3.googleusercontent.com/d/${dIdMatch[1]}`;
+      }
+    }
+
     const updated = dbStore.updateProfile(req.user.id, {
       title,
       bio,
@@ -306,7 +322,7 @@ function getSubSkillsForCategory(category: string): string[] {
       pricePer30Min: Number(pricePer30Min),
       pricePer60Min: Number(pricePer60Min),
       name: name || undefined,
-      avatarUrl: avatarUrl || undefined,
+      avatarUrl: cleanedAvatarUrl || undefined,
       totalSessions: totalSessions !== undefined ? Number(totalSessions) : undefined,
     });
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { User, Booking } from '../types';
-import { api } from '../lib/api';
+import { api, getCleanImageUrl } from '../lib/api';
 import { Shield, Users, BarChart3, Lock, Unlock, TrendingUp, IndianRupee, Wallet } from 'lucide-react';
 
 export default function AdminDashboard() {
@@ -178,7 +178,7 @@ export default function AdminDashboard() {
                     <tr key={u.id} className="hover:bg-slate-50/50 transition-colors">
                       <td className="p-4 flex items-center gap-3">
                         <img 
-                          src={u.avatarUrl} 
+                          src={getCleanImageUrl(u.avatarUrl)} 
                           alt="" 
                           referrerPolicy="no-referrer"
                           className="h-8 w-8 object-cover rounded-lg bg-slate-100" 
